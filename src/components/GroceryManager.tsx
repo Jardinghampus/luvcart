@@ -217,7 +217,7 @@ export function GroceryManager({ initialItems, user }: Props) {
             {spicyMode ? "🌶️ spicy on" : "🌶️ spicy off"}
           </span>
         </div>
-        <h1 className="bb-h1">hi {user.displayName} 🫐</h1>
+        <h1 className="bb-h1">hi {user.displayName} 🛒</h1>
         <p className="bb-lead">
           {spicyMode
             ? "retro unlocked. spicy pics showing. stay cute 🔥"
@@ -252,7 +252,7 @@ export function GroceryManager({ initialItems, user }: Props) {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={spicyMode ? "🔥 secret snack" : "🫐 blueberries"}
+            placeholder={spicyMode ? "🔥 secret snack" : "🛒 cute finds"}
             required
             maxLength={80}
           />
