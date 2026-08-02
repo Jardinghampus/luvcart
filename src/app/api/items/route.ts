@@ -17,6 +17,9 @@ const createSchema = z.object({
   note: z.string().trim().max(240).optional(),
   photoUrl: z.string().nullable().optional(),
   spicy: z.boolean().optional(),
+  teaser: z.boolean().optional(),
+  blurPx: z.number().min(0).max(24).optional(),
+  folder: z.enum(["selfies", "vacation", "food"]).optional(),
 });
 
 export async function POST(request: Request) {
@@ -29,7 +32,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const parsed = createSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Item needs a title" }, { status: 400 });
+      return NextResponse.json({ error: "Photo needs a caption" }, { status: 400 });
     }
 
     const item = await createItem({
@@ -38,11 +41,14 @@ export async function POST(request: Request) {
       note: parsed.data.note,
       photoUrl: parsed.data.photoUrl,
       spicy: parsed.data.spicy,
+      teaser: parsed.data.teaser,
+      blurPx: parsed.data.blurPx,
+      folder: parsed.data.folder,
     });
 
     return NextResponse.json({ item });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Could not create item" }, { status: 500 });
+    return NextResponse.json({ error: "Could not create photo" }, { status: 500 });
   }
 }

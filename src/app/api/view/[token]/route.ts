@@ -15,16 +15,33 @@ export async function GET(_request: Request, { params }: Params) {
     list: {
       displayName: user.displayName,
       username: user.username,
-      items: items.map(({ id, title, note, photoUrl, checked, spicy, sortOrder, updatedAt }) => ({
-        id,
-        title,
-        note,
-        photoUrl,
-        checked,
-        spicy,
-        sortOrder,
-        updatedAt,
-      })),
+      items: items.map(
+        ({
+          id,
+          title,
+          note,
+          photoUrl,
+          checked,
+          spicy,
+          teaser,
+          blurPx,
+          folder,
+          sortOrder,
+          updatedAt,
+        }) => ({
+          id,
+          title,
+          note,
+          photoUrl,
+          checked,
+          spicy,
+          teaser,
+          blurPx,
+          folder,
+          sortOrder,
+          updatedAt,
+        })
+      ),
     },
   });
 }

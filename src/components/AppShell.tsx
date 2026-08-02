@@ -2,30 +2,49 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import type { ReactNode } from "react";
-import { LuvcartIcon, LockCuteIcon } from "./CuteIcons";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSpicy } from "./SpicyMode";
 
 type Props = {
   children: ReactNode;
   title?: string;
-  subtitle?: string;
+  pathLabel?: string;
   showNav?: boolean;
   loggedIn?: boolean;
-  largeTitle?: string;
+  toolbarExtra?: ReactNode;
 };
+
+function useClock() {
+  const [now, setNow] = useState("00:00:00");
+  useEffect(() => {
+    const tick = () => {
+      setNow(
+        new Date().toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })
+      );
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
+}
 
 export function AppShell({
   children,
   title = "Luvcart",
-  subtitle,
+  pathLabel = "C:\\USERS\\GIRL\\PHOTOS",
   showNav = true,
   loggedIn = false,
-  largeTitle,
+  toolbarExtra,
 }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { spicy, toggleSpicy } = useSpicy();
+  const clock = useClock();
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -35,78 +54,101 @@ export function AppShell({
 
   const navLinks = loggedIn
     ? [
-        { href: "/", label: "Home", emoji: "🏠" },
-        { href: "/my", label: "Mine", emoji: "💗" },
-        { href: "/share", label: "Share", emoji: "🎀" },
+        { href: "/", label: "Home" },
+        { href: "/my", label: "Photos" },
+        { href: "/share", label: "Share" },
+        { href: "/slideshow", label: "Vault" },
       ]
     : [
-        { href: "/", label: "Home", emoji: "🏠" },
-        { href: "/signup", label: "Join", emoji: "✨" },
-        { href: "/login", label: "Login", emoji: "🍓" },
+        { href: "/", label: "Home" },
+        { href: "/signup", label: "Join" },
+        { href: "/login", label: "Login" },
       ];
 
   return (
-    <div className={`bb-app ${spicy ? "is-spicy" : ""}`}>
-      <div className="bb-ios-status" aria-hidden />
-      {spicy ? <div className="bb-scanlines" aria-hidden /> : null}
-      <header className="bb-nav">
-        <div className="bb-nav-left">
-          <LuvcartIcon size={26} />
-          <div>
-            <p className="bb-nav-title">{title}</p>
-            {subtitle ? <p className="bb-nav-sub">{subtitle}</p> : null}
+    <div className={`lc-desktop ${spicy ? "is-spicy" : ""}`}>
+      {spicy ? <div className="lc-scanlines" aria-hidden /> : null}
+
+      <div className="lc-window">
+        <div className="lc-titlebar">
+          <span className="lc-titlebar-text">
+            {title} — {pathLabel}
+          </span>
+          <div className="lc-traffic">
+            <button type="button" aria-label="Minimize">
+              _
+            </button>
+            <button type="button" aria-label="Maximize">
+              □
+            </button>
+            <button type="button" className="is-close" aria-label="Close" onClick={() => router.push("/")}>
+              ✕
+            </button>
           </div>
         </div>
-        <div className="bb-nav-actions">
+
+        <div className="lc-menubar">
+          <span className="lc-brand-mini">Luvcart</span>
+          <button type="button">File</button>
+          <button type="button">Edit</button>
+          <button type="button">View</button>
+          <div className="lc-menubar-spacer" />
           <button
             type="button"
-            className={`bb-spicy-toggle ${spicy ? "is-on" : ""}`}
+            className={`lc-tool-btn ${spicy ? "is-hot" : ""}`}
             onClick={toggleSpicy}
             aria-pressed={spicy}
-            title={spicy ? "Spicy on · retro unlocked" : "Turn on spicy pics + retro"}
           >
-            <span className="bb-spicy-knob" aria-hidden />
-            <span className="bb-spicy-label">{spicy ? "🌶️ SPICY" : "🌶️ spicy"}</span>
+            ✨ Filter
           </button>
-          <div className="bb-secure" title="Saved login · encrypted session">
-            <LockCuteIcon size={14} />
-            <span>safe</span>
-          </div>
+          {toolbarExtra}
+          <button type="button" className="lc-tool-btn" onClick={() => window.print?.()}>
+            💾 Save
+          </button>
         </div>
-      </header>
 
-      {spicy ? (
-        <div className="bb-marquee" aria-hidden>
-            <span>
-            ★ SPICY MODE ON ★ RETRO VIBES ★ HOT PICS UNLOCKED ★ LATE 90s ENERGY ★ LUVCART ★
+        <div className="lc-pathbar">
+          <span className="lc-folder-ico" aria-hidden>
+            📁
           </span>
+          <nav className="lc-crumbs" aria-label="Path">
+            <span>Desktop</span>
+            <span>›</span>
+            <span>My Computer</span>
+            <span>›</span>
+            <span>My Photos</span>
+            <span>›</span>
+            <strong>{title.replace(/^My\s+/i, "") || "Photos"}</strong>
+          </nav>
+          <time className="lc-clock">{clock}</time>
         </div>
-      ) : null}
 
-      <main className={`bb-main ${showNav ? "has-dock" : ""}`}>
-        {largeTitle ? <h1 className="bb-large-title">{largeTitle}</h1> : null}
-        {children}
-      </main>
+        <main className="lc-content">{children}</main>
+
+        <footer className="lc-statusbar">
+          <span>3 folders</span>
+          <span className="lc-dot">·</span>
+          <span>luv mode</span>
+          <span className="lc-dot">·</span>
+          <span>slaying ✨</span>
+          <span className="lc-statusbar-right">LUVCART v2.6 ❤️</span>
+        </footer>
+      </div>
 
       {showNav ? (
-        <nav className="bb-tabbar" aria-label="Main">
-          {navLinks.map((link) => {
-            const active = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`bb-tab ${active ? "is-active" : ""}`}
-              >
-                <span className="bb-tab-emoji">{link.emoji}</span>
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
+        <nav className="lc-dock" aria-label="Main">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`lc-dock-btn ${pathname === link.href ? "is-active" : ""}`}
+            >
+              {link.label}
+            </Link>
+          ))}
           {loggedIn ? (
-            <button type="button" className="bb-tab" onClick={logout}>
-              <span className="bb-tab-emoji">👋</span>
-              <span>Out</span>
+            <button type="button" className="lc-dock-btn" onClick={logout}>
+              Out
             </button>
           ) : null}
         </nav>

@@ -1,96 +1,134 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { nanoid } from "nanoid";
 import bcrypt from "bcryptjs";
-import type { GroceryItem, User } from "./types";
+import { getSupabase } from "./supabase";
+import type { FolderId, PhotoItem, User } from "./types";
+import { TEASER_BLUR_PX } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-const ITEMS_FILE = path.join(DATA_DIR, "items.json");
+const FOLDER_IDS: FolderId[] = ["selfies", "vacation", "food"];
 
-let seedPromise: Promise<void> | null = null;
+type ProfileRow = {
+  id: string;
+  username: string;
+  password_hash: string;
+  display_name: string;
+  share_token: string;
+  avatar_url: string | null;
+  bio: string | null;
+  incognito: boolean | null;
+  created_at: string;
+};
 
-async function ensureDataFiles() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(USERS_FILE);
-  } catch {
-    await fs.writeFile(USERS_FILE, "[]", "utf8");
+type PhotoRow = {
+  id: string;
+  user_id: string;
+  title: string;
+  note: string | null;
+  photo_url: string | null;
+  folder: string;
+  spicy: boolean | null;
+  teaser: boolean | null;
+  blur_px: number | null;
+  sort_order: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+function normalizeFolder(value: unknown): FolderId {
+  if (typeof value === "string" && FOLDER_IDS.includes(value as FolderId)) {
+    return value as FolderId;
   }
-  try {
-    await fs.access(ITEMS_FILE);
-  } catch {
-    await fs.writeFile(ITEMS_FILE, "[]", "utf8");
-  }
+  return "selfies";
 }
 
-async function readJson<T>(file: string): Promise<T> {
-  await ensureDataFiles();
-  const raw = await fs.readFile(file, "utf8");
-  return JSON.parse(raw) as T;
+function mapUser(row: ProfileRow): User {
+  return {
+    id: row.id,
+    username: row.username,
+    passwordHash: row.password_hash,
+    shareToken: row.share_token,
+    displayName: row.display_name,
+    avatarUrl: row.avatar_url,
+    bio: row.bio || "",
+    incognito: row.incognito !== false,
+    createdAt: row.created_at,
+  };
 }
 
-async function writeJson<T>(file: string, data: T) {
-  await ensureDataFiles();
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf8");
+function mapPhoto(row: PhotoRow): PhotoItem {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    title: row.title,
+    note: row.note || "",
+    photoUrl: row.photo_url,
+    folder: normalizeFolder(row.folder),
+    checked: false,
+    spicy: Boolean(row.spicy),
+    teaser: Boolean(row.teaser),
+    blurPx: row.blur_px == null ? (row.teaser ? TEASER_BLUR_PX : 0) : Number(row.blur_px),
+    sortOrder: row.sort_order ?? 0,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
 }
 
 async function ensureDemoUser() {
-  if (!seedPromise) {
-    seedPromise = (async () => {
-      const users = await readJson<User[]>(USERS_FILE);
-      if (users.some((u) => u.username.toLowerCase() === "demo")) return;
-      users.push({
-        id: nanoid(),
-        username: "demo",
-        passwordHash: await bcrypt.hash("1111", 10),
-        shareToken: nanoid(16),
-        displayName: "Demo",
-        createdAt: new Date().toISOString(),
-      });
-      await writeJson(USERS_FILE, users);
-    })().catch((err) => {
-      seedPromise = null;
-      throw err;
-    });
-  }
-  await seedPromise;
+  const sb = getSupabase();
+  const { data: existing } = await sb
+    .from("profiles")
+    .select("id")
+    .eq("username", "demo")
+    .maybeSingle();
+  if (existing) return;
+
+  await sb.from("profiles").insert({
+    id: crypto.randomUUID(),
+    username: "demo",
+    password_hash: await bcrypt.hash("1111", 10),
+    display_name: "Demo",
+    share_token: nanoid(16),
+    avatar_url: null,
+    bio: "soft girl drive · private peeks only",
+    incognito: true,
+  });
 }
 
 export async function getUsers(): Promise<User[]> {
   await ensureDemoUser();
-  return readJson<User[]>(USERS_FILE);
-}
-
-export async function saveUsers(users: User[]) {
-  await writeJson(USERS_FILE, users);
-}
-
-export async function getItems(): Promise<GroceryItem[]> {
-  const items = await readJson<GroceryItem[]>(ITEMS_FILE);
-  return items.map((item) => ({
-    ...item,
-    spicy: Boolean(item.spicy),
-  }));
-}
-
-export async function saveItems(items: GroceryItem[]) {
-  await writeJson(ITEMS_FILE, items);
+  const { data, error } = await getSupabase().from("profiles").select("*");
+  if (error) throw error;
+  return (data as ProfileRow[]).map(mapUser);
 }
 
 export async function findUserByUsername(username: string) {
-  const users = await getUsers();
-  return users.find((u) => u.username.toLowerCase() === username.toLowerCase());
+  await ensureDemoUser();
+  const { data, error } = await getSupabase()
+    .from("profiles")
+    .select("*")
+    .ilike("username", username)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapUser(data as ProfileRow) : null;
 }
 
 export async function findUserById(id: string) {
-  const users = await getUsers();
-  return users.find((u) => u.id === id);
+  const { data, error } = await getSupabase()
+    .from("profiles")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapUser(data as ProfileRow) : null;
 }
 
 export async function findUserByShareToken(token: string) {
-  const users = await getUsers();
-  return users.find((u) => u.shareToken === token);
+  const { data, error } = await getSupabase()
+    .from("profiles")
+    .select("*")
+    .eq("share_token", token)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapUser(data as ProfileRow) : null;
 }
 
 export async function createUser(input: {
@@ -98,30 +136,60 @@ export async function createUser(input: {
   passwordHash: string;
   displayName?: string;
 }) {
-  const users = await getUsers();
-  if (users.some((u) => u.username.toLowerCase() === input.username.toLowerCase())) {
-    throw new Error("USERNAME_TAKEN");
-  }
+  const taken = await findUserByUsername(input.username);
+  if (taken) throw new Error("USERNAME_TAKEN");
 
-  const user: User = {
-    id: nanoid(),
+  const row = {
+    id: crypto.randomUUID(),
     username: input.username.trim(),
-    passwordHash: input.passwordHash,
-    shareToken: nanoid(16),
-    displayName: input.displayName?.trim() || input.username.trim(),
-    createdAt: new Date().toISOString(),
+    password_hash: input.passwordHash,
+    display_name: input.displayName?.trim() || input.username.trim(),
+    share_token: nanoid(16),
+    avatar_url: null,
+    bio: "",
+    incognito: true,
   };
 
-  users.push(user);
-  await saveUsers(users);
-  return user;
+  const { data, error } = await getSupabase().from("profiles").insert(row).select("*").single();
+  if (error) throw error;
+  return mapUser(data as ProfileRow);
+}
+
+export async function updateUser(
+  userId: string,
+  patch: Partial<Pick<User, "displayName" | "avatarUrl" | "bio" | "incognito">>
+) {
+  const payload: Record<string, unknown> = {};
+  if (patch.displayName !== undefined) payload.display_name = patch.displayName;
+  if (patch.avatarUrl !== undefined) payload.avatar_url = patch.avatarUrl;
+  if (patch.bio !== undefined) payload.bio = patch.bio;
+  if (patch.incognito !== undefined) payload.incognito = patch.incognito;
+
+  const { data, error } = await getSupabase()
+    .from("profiles")
+    .update(payload)
+    .eq("id", userId)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return mapUser(data as ProfileRow);
+}
+
+export async function getItems(): Promise<PhotoItem[]> {
+  const { data, error } = await getSupabase().from("photos").select("*");
+  if (error) throw error;
+  return (data as PhotoRow[]).map(mapPhoto);
 }
 
 export async function getItemsForUser(userId: string) {
-  const items = await getItems();
-  return items
-    .filter((i) => i.userId === userId)
-    .sort((a, b) => a.sortOrder - b.sortOrder || a.createdAt.localeCompare(b.createdAt));
+  const { data, error } = await getSupabase()
+    .from("photos")
+    .select("*")
+    .eq("user_id", userId)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data as PhotoRow[]).map(mapPhoto);
 }
 
 export async function createItem(input: {
@@ -130,53 +198,81 @@ export async function createItem(input: {
   note?: string;
   photoUrl?: string | null;
   spicy?: boolean;
+  teaser?: boolean;
+  blurPx?: number;
+  folder?: FolderId;
 }) {
-  const items = await getItems();
-  const userItems = items.filter((i) => i.userId === input.userId);
-  const maxOrder = userItems.reduce((m, i) => Math.max(m, i.sortOrder), -1);
+  const existing = await getItemsForUser(input.userId);
+  const maxOrder = existing.reduce((m, i) => Math.max(m, i.sortOrder), -1);
+  const teaser = Boolean(input.teaser);
+  const blurPx =
+    input.blurPx != null ? input.blurPx : teaser ? TEASER_BLUR_PX : 0;
 
-  const item: GroceryItem = {
-    id: nanoid(),
-    userId: input.userId,
-    title: input.title.trim(),
-    note: input.note?.trim() || "",
-    photoUrl: input.photoUrl ?? null,
-    checked: false,
-    spicy: Boolean(input.spicy),
-    sortOrder: maxOrder + 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  items.push(item);
-  await saveItems(items);
-  return item;
+  const { data, error } = await getSupabase()
+    .from("photos")
+    .insert({
+      id: crypto.randomUUID(),
+      user_id: input.userId,
+      title: input.title.trim(),
+      note: input.note?.trim() || "",
+      photo_url: input.photoUrl ?? null,
+      folder: normalizeFolder(input.folder),
+      spicy: Boolean(input.spicy),
+      teaser,
+      blur_px: blurPx,
+      sort_order: maxOrder + 1,
+    })
+    .select("*")
+    .single();
+  if (error) throw error;
+  return mapPhoto(data as PhotoRow);
 }
 
 export async function updateItem(
   itemId: string,
   userId: string,
   patch: Partial<
-    Pick<GroceryItem, "title" | "note" | "photoUrl" | "checked" | "spicy" | "sortOrder">
+    Pick<
+      PhotoItem,
+      "title" | "note" | "photoUrl" | "checked" | "spicy" | "teaser" | "blurPx" | "folder" | "sortOrder"
+    >
   >
 ) {
-  const items = await getItems();
-  const index = items.findIndex((i) => i.id === itemId && i.userId === userId);
-  if (index === -1) return null;
-
-  items[index] = {
-    ...items[index],
-    ...patch,
-    updatedAt: new Date().toISOString(),
+  const payload: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
   };
-  await saveItems(items);
-  return items[index];
+  if (patch.title !== undefined) payload.title = patch.title;
+  if (patch.note !== undefined) payload.note = patch.note;
+  if (patch.photoUrl !== undefined) payload.photo_url = patch.photoUrl;
+  if (patch.spicy !== undefined) payload.spicy = patch.spicy;
+  if (patch.teaser !== undefined) {
+    payload.teaser = patch.teaser;
+    if (patch.blurPx === undefined) {
+      payload.blur_px = patch.teaser ? TEASER_BLUR_PX : 0;
+    }
+  }
+  if (patch.blurPx !== undefined) payload.blur_px = patch.blurPx;
+  if (patch.folder !== undefined) payload.folder = patch.folder;
+  if (patch.sortOrder !== undefined) payload.sort_order = patch.sortOrder;
+
+  const { data, error } = await getSupabase()
+    .from("photos")
+    .update(payload)
+    .eq("id", itemId)
+    .eq("user_id", userId)
+    .select("*")
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapPhoto(data as PhotoRow) : null;
 }
 
 export async function deleteItem(itemId: string, userId: string) {
-  const items = await getItems();
-  const next = items.filter((i) => !(i.id === itemId && i.userId === userId));
-  if (next.length === items.length) return false;
-  await saveItems(next);
-  return true;
+  const { data, error } = await getSupabase()
+    .from("photos")
+    .delete()
+    .eq("id", itemId)
+    .eq("user_id", userId)
+    .select("id");
+  if (error) throw error;
+  return Boolean(data?.length);
 }

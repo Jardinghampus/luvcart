@@ -68,11 +68,17 @@ export function toPublicUser(user: {
   username: string;
   displayName: string;
   shareToken: string;
+  avatarUrl?: string | null;
+  bio?: string;
+  incognito?: boolean;
 }) {
   return {
     id: user.id,
     username: user.username,
     displayName: user.displayName,
     shareToken: user.shareToken,
+    avatarUrl: user.avatarUrl ?? null,
+    bio: user.bio ?? "",
+    incognito: user.incognito !== false,
   };
 }

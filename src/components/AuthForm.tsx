@@ -43,19 +43,17 @@ export function AuthForm({ mode }: { mode: Mode }) {
   }
 
   return (
-    <form className="bb-sheet" onSubmit={onSubmit} style={{ margin: "0 1rem" }}>
-      <h1 className="bb-h1">
-        {mode === "signup" ? "make it yours 💕" : "welcome back 🍓"}
-      </h1>
-      <p className="bb-lead">
+    <form className="lc-auth" onSubmit={onSubmit}>
+      <h1>{mode === "signup" ? "make it yours 💕" : "welcome back 🍓"}</h1>
+      <p>
         {mode === "signup"
           ? "userword + password. we keep your login safe 🔒"
-          : "your login is saved — slip back in anytime ✨"}
+          : "your login is saved — slip back into your folders ✨"}
       </p>
 
       {mode === "signup" ? (
-        <label className="bb-field">
-          <span>nickname</span>
+        <label>
+          nickname
           <input
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
@@ -65,8 +63,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
         </label>
       ) : null}
 
-      <label className="bb-field">
-        <span>userword</span>
+      <label>
+        userword
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -78,8 +76,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
         />
       </label>
 
-      <label className="bb-field">
-        <span>password</span>
+      <label>
+        password
         <input
           type="password"
           value={password}
@@ -91,14 +89,14 @@ export function AuthForm({ mode }: { mode: Mode }) {
         />
       </label>
 
-      {error ? <p className="bb-error">{error}</p> : null}
+      {error ? <p className="lc-error">{error}</p> : null}
 
-      <button className="bb-btn bb-btn-primary" type="submit" disabled={loading}>
+      <button className="lc-cta is-primary" type="submit" disabled={loading}>
         {loading ? "saving… 🔐" : mode === "signup" ? "save me 💗" : "let me in ✨"}
       </button>
 
-      <p className="bb-fineprint">
-        🔐 logins are saved (hashed + encrypted session cookie).
+      <p style={{ fontSize: "0.82rem" }}>
+        🔐 logins are saved (hashed + encrypted session).
         {mode === "signup" ? (
           <>
             {" "}

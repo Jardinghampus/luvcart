@@ -26,8 +26,13 @@ const vt = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "Luvcart 🛒",
-  description: "Cute little cart. Pink & private.",
+  title: "Luvcart",
+  description: "Private polaroid folders. Incognito by default.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

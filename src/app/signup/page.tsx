@@ -8,7 +8,7 @@ export default async function SignupPage() {
   if (session) redirect("/my");
 
   return (
-    <AppShell subtitle="join ✨" loggedIn={false} largeTitle="join">
+    <AppShell title="Join Luvcart" pathLabel="C:\\USERS\\NEW\\SETUP" loggedIn={false}>
       <AuthForm mode="signup" />
     </AppShell>
   );

@@ -1,10 +1,12 @@
 # Luvcart
 
-Girly iOS-feeling + Windows 94 retro app for private photo lists.
+Private Win94 polaroid folders for cute / spicy shares — **incognito by default**.
 
-- Sign up with **userword + password** (logins saved: hashed + session cookie)
-- Owner vault with edit / spicy pics / share link
-- `/slideshow` — private vault of every upload (Blob + local)
+## Stack
+
+- Next.js + Vercel Blob
+- Supabase project: **luvcart** (`eu-north-1`)
+- Custom userword + password auth
 
 ## Local
 
@@ -13,26 +15,31 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5454](http://localhost:5454)
+http://localhost:5454
 
-## Accounts
+## Demo
 
-| userword | password | notes |
-|---|---|---|
-| `demo` | `1111` | auto-seeded |
-| `berryberryberry` | `berryberry` | `npm run seed:luv` (sample) |
+| userword | password |
+|---|---|
+| `demo` | `1111` |
 
-## Slideshow vault
+## Product
 
-- URL: `/slideshow`
-- Password: `Gamlastan24` (or `SLIDESHOW_PASSWORD` env)
-- Lists every upload from Vercel Blob + local `/public/uploads` + item photos
-- Play / pause slideshow · preview strip · Win94 girl vibes
+- Folders: Selfies / Vacation / Food + Feed
+- Profile avatar (retro frame)
+- Teaser mode: soft **1px** blur (toggle / clear)
+- Spicy Filter for nudes
+- Share my profile (`/u/username`) — no raw link in the main UI
+- `/slideshow` vault (`Gamlastan24`) lists Blob + DB photos
+- `robots.txt` disallows crawlers
 
 ## Env
 
 ```bash
-AUTH_SECRET=...
+AUTH_SECRET=
 SLIDESHOW_PASSWORD=Gamlastan24
-BLOB_READ_WRITE_TOKEN=   # optional — enables Vercel Blob
+BLOB_READ_WRITE_TOKEN=
+BLOB_STORE_ID=
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
 ```

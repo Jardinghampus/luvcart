@@ -8,7 +8,7 @@ export default async function LoginPage() {
   if (session) redirect("/my");
 
   return (
-    <AppShell subtitle="login 🍓" loggedIn={false} largeTitle="login">
+    <AppShell title="Login" pathLabel="C:\\USERS\\GIRL\\LOGIN" loggedIn={false}>
       <AuthForm mode="login" />
     </AppShell>
   );
