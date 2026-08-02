@@ -26,12 +26,12 @@ const vt = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "BlueberryDating 🫐",
-  description: "Berry sweet. Soft. Yours.",
+  title: "Luvcart 🛒",
+  description: "Cute little cart. Pink & private.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "BlueberryDating",
+    title: "Luvcart",
   },
 };
 

@@ -6,7 +6,7 @@ const PASSWORD = process.env.SLIDESHOW_PASSWORD || "Gamlastan24";
 
 function secret() {
   return new TextEncoder().encode(
-    process.env.AUTH_SECRET || "blueberry-local-dev-secret-change-me"
+    process.env.AUTH_SECRET || "luvcart-local-dev-secret-change-me"
   );
 }
 

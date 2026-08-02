@@ -15,7 +15,7 @@ export async function uploadPhoto(file: File): Promise<string> {
   const filename = `${nanoid()}${safeExt}`;
 
   if (useBlob()) {
-    const blob = await put(`blueberrydating/${filename}`, file, {
+    const blob = await put(`luvcart/${filename}`, file, {
       access: "public",
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });

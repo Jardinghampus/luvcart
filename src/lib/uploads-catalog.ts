@@ -63,7 +63,7 @@ export async function listAllUploads(): Promise<UploadEntry[]> {
       let cursor: string | undefined;
       do {
         const page = await list({
-          prefix: "blueberrydating/",
+          prefix: "luvcart/",
           cursor,
           token: process.env.BLOB_READ_WRITE_TOKEN,
         });

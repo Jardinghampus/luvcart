@@ -59,7 +59,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           <input
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Berry Berry Berry"
+            placeholder="Luv Babe"
             maxLength={40}
           />
         </label>
@@ -70,7 +70,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="berryberryberry"
+          placeholder="luvcart_girl"
           autoComplete="username"
           required
           minLength={3}

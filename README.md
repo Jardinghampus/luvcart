@@ -1,4 +1,4 @@
-# BlueberryDating
+# Luvcart
 
 Girly iOS-feeling + Windows 94 retro app for private photo lists.
 
@@ -20,7 +20,7 @@ Open [http://localhost:5454](http://localhost:5454)
 | userword | password | notes |
 |---|---|---|
 | `demo` | `1111` | auto-seeded |
-| `berryberryberry` | `berryberry` | `npm run seed:berry` |
+| `berryberryberry` | `berryberry` | `npm run seed:luv` (sample) |
 
 ## Slideshow vault
 

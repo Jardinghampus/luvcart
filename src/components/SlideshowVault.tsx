@@ -91,7 +91,7 @@ export function SlideshowVault() {
       <div className="win-app">
         <div className="win-window">
           <div className="win-titlebar">
-            <span>🌸 Blueberry Vault — loading…</span>
+            <span>🌸 Luvcart Vault — loading…</span>
           </div>
           <div className="win-body">
             <p className="win-status">Please wait, darling…</p>
@@ -155,7 +155,7 @@ export function SlideshowVault() {
     <div className="win-app">
       <div className="win-window win-wide">
         <div className="win-titlebar">
-          <span>🎞️ Blueberry Slideshow — all uploads</span>
+          <span>🎞️ Luvcart Slideshow — all uploads</span>
           <div className="win-traffic">
             <b>_</b>
             <b>□</b>
@@ -241,7 +241,7 @@ export function SlideshowVault() {
         </div>
 
         <div className="win-statusbar">
-          Ready · BlueberryDating vault · posh &amp; private · {index + 1}/{uploads.length || 0}
+          Ready · Luvcart vault · posh &amp; private · {index + 1}/{uploads.length || 0}
         </div>
       </div>
     </div>

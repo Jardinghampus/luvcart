@@ -7,7 +7,7 @@ const COOKIE_NAME = "bb_session";
 const SESSION_DAYS = 30;
 
 function getSecret() {
-  const secret = process.env.AUTH_SECRET || "blueberry-local-dev-secret-change-me";
+  const secret = process.env.AUTH_SECRET || "luvcart-local-dev-secret-change-me";
   return new TextEncoder().encode(secret);
 }
 

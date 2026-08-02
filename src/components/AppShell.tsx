@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { BerryIcon, LockCuteIcon } from "./CuteIcons";
+import { LuvcartIcon, LockCuteIcon } from "./CuteIcons";
 import { useSpicy } from "./SpicyMode";
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 
 export function AppShell({
   children,
-  title = "BlueberryDating",
+  title = "Luvcart",
   subtitle,
   showNav = true,
   loggedIn = false,
@@ -51,7 +51,7 @@ export function AppShell({
       {spicy ? <div className="bb-scanlines" aria-hidden /> : null}
       <header className="bb-nav">
         <div className="bb-nav-left">
-          <BerryIcon size={26} />
+          <LuvcartIcon size={26} />
           <div>
             <p className="bb-nav-title">{title}</p>
             {subtitle ? <p className="bb-nav-sub">{subtitle}</p> : null}
@@ -77,8 +77,8 @@ export function AppShell({
 
       {spicy ? (
         <div className="bb-marquee" aria-hidden>
-          <span>
-            ★ SPICY MODE ON ★ RETRO VIBES ★ HOT PICS UNLOCKED ★ LATE 90s ENERGY ★ KEEP IT CUTE ★
+            <span>
+            ★ SPICY MODE ON ★ RETRO VIBES ★ HOT PICS UNLOCKED ★ LATE 90s ENERGY ★ LUVCART ★
           </span>
         </div>
       ) : null}

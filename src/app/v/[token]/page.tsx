@@ -13,7 +13,7 @@ export default async function ViewPage({ params }: Props) {
   const items = await getItemsForUser(user.id);
 
   return (
-    <AppShell title="BlueberryDating" subtitle="guest peek 👁" showNav={false}>
+    <AppShell title="Luvcart" subtitle="guest peek 👁" showNav={false}>
       <ReadOnlyList displayName={user.displayName} items={items} />
     </AppShell>
   );

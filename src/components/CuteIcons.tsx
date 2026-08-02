@@ -2,26 +2,36 @@ import type { SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number };
 
-export function BerryIcon({ size = 28, ...props }: IconProps) {
-  const gid = `berryGlow-${size}`;
+export function LuvcartIcon({ size = 28, ...props }: IconProps) {
+  const gid = `luvGlow-${size}`;
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden {...props}>
-      <ellipse cx="32" cy="36" rx="18" ry="20" fill="#7B5CFF" />
-      <ellipse cx="32" cy="36" rx="18" ry="20" fill={`url(#${gid})`} fillOpacity="0.55" />
-      <circle cx="24" cy="30" r="3" fill="#C9B6FF" />
-      <circle cx="36" cy="28" r="2.4" fill="#E8DEFF" />
-      <circle cx="30" cy="42" r="2.2" fill="#B59CFF" />
-      <path d="M32 14c2 4 6 7 10 8-4 1-7 4-8 8-1-4-4-7-8-8 4-1 6-4 6-8z" fill="#7DDE6A" />
-      <path d="M28 12c3 1 5 3 6 5-2-.2-4-.8-6-2-1-1-2-2-2-3z" fill="#FF8EC8" />
+      <path
+        d="M14 18h6l3.2 18.5a4 4 0 003.9 3.3h18.2a4 4 0 003.9-3.1L52 24H22"
+        stroke="#FF4F9A"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <circle cx="28" cy="50" r="4" fill="#FF7EB6" />
+      <circle cx="44" cy="50" r="4" fill="#FF7EB6" />
+      <path
+        d="M34 12s-6 4-6 9c0 4 3 6 6 8 3-2 6-4 6-8 0-5-6-9-6-9z"
+        fill={`url(#${gid})`}
+      />
       <defs>
-        <radialGradient id={gid} cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(24 28) rotate(65) scale(28 24)">
+        <radialGradient id={gid} cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(30 16) rotate(65) scale(14 12)">
           <stop stopColor="#FFB7E2" />
-          <stop offset="1" stopColor="#7B5CFF" stopOpacity="0" />
+          <stop offset="1" stopColor="#FF4F9A" />
         </radialGradient>
       </defs>
     </svg>
   );
 }
+
+/** @deprecated use LuvcartIcon */
+export const BerryIcon = LuvcartIcon;
 
 export function HeartIcon({ size = 24, ...props }: IconProps) {
   return (
@@ -72,7 +82,7 @@ export function StickerRow() {
   return (
     <div className="bb-stickers" aria-hidden>
       <span className="bb-sticker s1">
-        <BerryIcon size={42} />
+        <LuvcartIcon size={42} />
       </span>
       <span className="bb-sticker s2">
         <HeartIcon size={34} />
@@ -85,7 +95,7 @@ export function StickerRow() {
       </span>
       <span className="bb-sticker s5">💕</span>
       <span className="bb-sticker s6">✨</span>
-      <span className="bb-sticker s7">🫐</span>
+      <span className="bb-sticker s7">🛒</span>
       <span className="bb-sticker s8">🌸</span>
     </div>
   );

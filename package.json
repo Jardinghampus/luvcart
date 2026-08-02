@@ -1,5 +1,5 @@
 {
-  "name": "blueberrydating",
+  "name": "luvcart",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --port 5454",
     "lint": "eslint",
-    "seed:berry": "node scripts/seed-berry.js",
+    "seed:luv": "node scripts/seed-berry.js",
     "seed:demo": "node scripts/seed-demo.js"
   },
   "dependencies": {

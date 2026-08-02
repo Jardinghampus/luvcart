@@ -1,33 +1,29 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
-import { BerryIcon, StickerRow } from "@/components/CuteIcons";
+import { LuvcartIcon, StickerRow } from "@/components/CuteIcons";
 import { getSession } from "@/lib/auth";
 
 export default async function HomePage() {
   const session = await getSession();
 
   return (
-    <AppShell subtitle="berry soft ✨" loggedIn={Boolean(session)}>
+    <AppShell subtitle="luv soft ✨" loggedIn={Boolean(session)}>
       <section className="bb-landing">
         <div className="bb-landing-glow" aria-hidden />
         <StickerRow />
 
         <div className="bb-brand-block">
           <div className="bb-brand-mark">
-            <BerryIcon size={22} />
+            <LuvcartIcon size={22} />
             soft mode on
           </div>
 
-          <h1 className="bb-brand-name">
-            Blueberry
-            <br />
-            Dating
-          </h1>
+          <h1 className="bb-brand-name">Luvcart</h1>
 
-          <p className="bb-brand-line">cute little world. pink & private. just for you 💕</p>
+          <p className="bb-brand-line">cute little cart. pink & private. just for you 💕</p>
 
           <div className="bb-chip-row" aria-hidden>
-            <span className="bb-emoji-chip">🫐 berry</span>
+            <span className="bb-emoji-chip">🛒 luv</span>
             <span className="bb-emoji-chip">🎀 girly</span>
             <span className="bb-emoji-chip">🔒 safe</span>
             <span className="bb-emoji-chip">✨ sparkle</span>
@@ -41,10 +37,10 @@ export default async function HomePage() {
             ) : (
               <>
                 <Link className="bb-btn bb-btn-primary" href="/signup">
-                  join the berry ✨
+                  join luvcart ✨
                 </Link>
                 <Link className="bb-btn bb-btn-soft" href="/login">
-                  i already bloom here 🍓
+                  i already shop here 🍓
                 </Link>
               </>
             )}
