@@ -951,3 +951,182 @@ a {
   background: rgba(255, 255, 255, 0.9);
   padding: 0 0.15rem;
 }
+
+.lc-share-card {
+  margin-top: 0.85rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.7rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 2px solid #fff;
+  border-right-color: #716f64;
+  border-bottom-color: #716f64;
+}
+
+.lc-share-qr {
+  border: 2px solid #716f64;
+  background: white;
+  display: block;
+}
+
+.lc-share-label {
+  margin: 0;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--lc-muted);
+}
+
+.lc-share-handle {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  color: var(--lc-pink-deep);
+}
+
+.lc-share-meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--lc-muted);
+}
+
+.lc-privacy-panel {
+  margin-top: 0.95rem;
+  padding: 0.75rem;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255, 182, 225, 0.55), transparent 42%),
+    linear-gradient(180deg, #fff9fd, #ffe8f4);
+  border: 2px solid #fff;
+  border-right-color: #716f64;
+  border-bottom-color: #716f64;
+  box-shadow: 2px 2px 0 rgba(113, 111, 100, 0.35);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.lc-privacy-panel.is-fresh {
+  border-color: #ff7ab8;
+  box-shadow: 0 0 0 2px rgba(255, 79, 154, 0.25), 2px 2px 0 rgba(113, 111, 100, 0.35);
+}
+
+.lc-privacy-head {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  margin-bottom: 0.65rem;
+}
+
+.lc-privacy-head > span {
+  font-size: 1.35rem;
+  line-height: 1;
+  animation: lc-spin-idle 6s linear infinite;
+  display: inline-block;
+}
+
+.lc-privacy-panel.is-fresh .lc-privacy-head > span {
+  animation: lc-spin-burst 0.9s ease-out;
+}
+
+.lc-privacy-head strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--lc-ink);
+}
+
+.lc-privacy-head p {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--lc-muted);
+  line-height: 1.35;
+}
+
+.lc-privacy-url {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--lc-muted);
+  text-transform: lowercase;
+}
+
+.lc-privacy-url input {
+  width: 100%;
+  min-height: 2.2rem;
+  padding: 0.35rem 0.5rem;
+  border: 2px solid #fff;
+  border-right-color: #716f64;
+  border-bottom-color: #716f64;
+  background: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  color: var(--lc-pink-deep);
+  word-break: break-all;
+}
+
+.lc-privacy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.lc-privacy-actions a.lc-mini-btn {
+  text-decoration: none;
+  display: inline-grid;
+  place-items: center;
+}
+
+.lc-privacy-confirm {
+  margin-top: 0.55rem;
+  padding: 0.55rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 2px dashed #ff7ab8;
+}
+
+.lc-privacy-confirm p {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--lc-ink);
+  line-height: 1.4;
+}
+
+.lc-privacy-flash {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-retro);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--lc-pink-deep);
+}
+
+@keyframes lc-spin-idle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lc-spin-burst {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  60% {
+    transform: rotate(420deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-privacy-head > span,
+  .lc-privacy-panel.is-fresh .lc-privacy-head > span {
+    animation: none;
+  }
+}
+

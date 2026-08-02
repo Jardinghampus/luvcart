@@ -175,6 +175,18 @@ export async function updateUser(
   return mapUser(data as ProfileRow);
 }
 
+export async function rotateShareToken(userId: string) {
+  const nextToken = nanoid(16);
+  const { data, error } = await getSupabase()
+    .from("profiles")
+    .update({ share_token: nextToken })
+    .eq("id", userId)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return mapUser(data as ProfileRow);
+}
+
 export async function getItems(): Promise<PhotoItem[]> {
   const { data, error } = await getSupabase().from("photos").select("*");
   if (error) throw error;
