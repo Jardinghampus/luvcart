@@ -12,10 +12,11 @@ type Props = {
   showNav?: boolean;
   loggedIn?: boolean;
   toolbarExtra?: ReactNode;
+  statusLeft?: string;
 };
 
 function useClock() {
-  const [now, setNow] = useState("00:00:00");
+  const [now, setNow] = useState("--:--:-- --");
   useEffect(() => {
     const tick = () => {
       setNow(
@@ -40,6 +41,7 @@ export function AppShell({
   showNav = true,
   loggedIn = false,
   toolbarExtra,
+  statusLeft,
 }: Props) {
   const pathname = usePathname();
   const router = useRouter();
@@ -54,19 +56,29 @@ export function AppShell({
 
   const navLinks = loggedIn
     ? [
-        { href: "/", label: "Home" },
-        { href: "/my", label: "Photos" },
-        { href: "/share", label: "Share" },
-        { href: "/slideshow", label: "Vault" },
+        { href: "/", label: "Home", icon: "🏠" },
+        { href: "/my", label: "Photos", icon: "💗" },
+        { href: "/share", label: "Share", icon: "🎀" },
+        { href: "/slideshow", label: "Vault", icon: "🎞️" },
       ]
     : [
-        { href: "/", label: "Home" },
-        { href: "/signup", label: "Join" },
-        { href: "/login", label: "Login" },
+        { href: "/", label: "Home", icon: "🏠" },
+        { href: "/signup", label: "Join", icon: "✨" },
+        { href: "/login", label: "Login", icon: "🍓" },
+        { href: "/slideshow", label: "Vault", icon: "🎞️" },
       ];
+
+  const crumb = title.replace(/^My\s+/i, "") || "Photos";
 
   return (
     <div className={`lc-desktop ${spicy ? "is-spicy" : ""}`}>
+      <div className="lc-desktop-icons" aria-hidden>
+        <span>♻️ Recycle</span>
+        <span>💻 My PC</span>
+        <span>📁 Photos</span>
+        <span>💖 Luvcart</span>
+      </div>
+
       {spicy ? <div className="lc-scanlines" aria-hidden /> : null}
 
       <div className="lc-window">
@@ -81,7 +93,12 @@ export function AppShell({
             <button type="button" aria-label="Maximize">
               □
             </button>
-            <button type="button" className="is-close" aria-label="Close" onClick={() => router.push("/")}>
+            <button
+              type="button"
+              className="is-close"
+              aria-label="Close"
+              onClick={() => router.push(loggedIn ? "/my" : "/")}
+            >
               ✕
             </button>
           </div>
@@ -92,17 +109,24 @@ export function AppShell({
           <button type="button">File</button>
           <button type="button">Edit</button>
           <button type="button">View</button>
+          <button type="button">Help</button>
           <div className="lc-menubar-spacer" />
           <button
             type="button"
             className={`lc-tool-btn ${spicy ? "is-hot" : ""}`}
             onClick={toggleSpicy}
             aria-pressed={spicy}
+            title="Spicy filter"
           >
             ✨ Filter
           </button>
           {toolbarExtra}
-          <button type="button" className="lc-tool-btn" onClick={() => window.print?.()}>
+          <button
+            type="button"
+            className="lc-tool-btn"
+            onClick={() => window.print?.()}
+            title="Save / print"
+          >
             💾 Save
           </button>
         </div>
@@ -118,7 +142,7 @@ export function AppShell({
             <span>›</span>
             <span>My Photos</span>
             <span>›</span>
-            <strong>{title.replace(/^My\s+/i, "") || "Photos"}</strong>
+            <strong>{crumb}</strong>
           </nav>
           <time className="lc-clock">{clock}</time>
         </div>
@@ -126,11 +150,7 @@ export function AppShell({
         <main className="lc-content">{children}</main>
 
         <footer className="lc-statusbar">
-          <span>3 folders</span>
-          <span className="lc-dot">·</span>
-          <span>luv mode</span>
-          <span className="lc-dot">·</span>
-          <span>slaying ✨</span>
+          <span>{statusLeft || "3 folders · luv mode · slaying ✨"}</span>
           <span className="lc-statusbar-right">LUVCART v2.6 ❤️</span>
         </footer>
       </div>
@@ -143,12 +163,14 @@ export function AppShell({
               href={link.href}
               className={`lc-dock-btn ${pathname === link.href ? "is-active" : ""}`}
             >
-              {link.label}
+              <span className="lc-dock-icon">{link.icon}</span>
+              <span>{link.label}</span>
             </Link>
           ))}
           {loggedIn ? (
             <button type="button" className="lc-dock-btn" onClick={logout}>
-              Out
+              <span className="lc-dock-icon">👋</span>
+              <span>Out</span>
             </button>
           ) : null}
         </nav>

@@ -1,19 +1,27 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import type { UploadEntry } from "@/lib/uploads-catalog";
+import { AppShell } from "./AppShell";
+
+type VaultUpload = UploadEntry & {
+  teaser?: boolean;
+  blurPx?: number;
+  folder?: string;
+};
 
 export function SlideshowVault() {
   const [unlocked, setUnlocked] = useState(false);
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [uploads, setUploads] = useState<UploadEntry[]>([]);
+  const [uploads, setUploads] = useState<VaultUpload[]>([]);
   const [storage, setStorage] = useState("local-disk");
   const [loading, setLoading] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [selected, setSelected] = useState<UploadEntry | null>(null);
+  const [selected, setSelected] = useState<VaultUpload | null>(null);
 
   const current = uploads[index] || null;
 
@@ -71,7 +79,7 @@ export function SlideshowVault() {
     });
     const data = await res.json();
     if (!res.ok) {
-      setError(data.error || "Nope");
+      setError(data.error || "Wrong password, darling.");
       return;
     }
     setUnlocked(true);
@@ -88,90 +96,64 @@ export function SlideshowVault() {
 
   if (checking) {
     return (
-      <div className="win-app">
-        <div className="win-window">
-          <div className="win-titlebar">
-            <span>🌸 Luvcart Vault — loading…</span>
-          </div>
-          <div className="win-body">
-            <p className="win-status">Please wait, darling…</p>
-          </div>
-        </div>
-      </div>
+      <AppShell title="Vault" pathLabel="C:\\LUVCART\\VAULT" showNav={false}>
+        <p className="lc-empty">Please wait, darling… 💕</p>
+      </AppShell>
     );
   }
 
   if (!unlocked) {
     return (
-      <div className="win-app">
-        <div className="win-window win-login">
-          <div className="win-titlebar">
-            <span>🔐 Private Slideshow Vault</span>
-            <div className="win-traffic">
-              <b>_</b>
-              <b>□</b>
-              <b>×</b>
-            </div>
-          </div>
-          <div className="win-body">
-            <div className="win-hero">
-              <p className="win-kicker">Windows 94 · posh girl mode</p>
-              <h1>Slideshow Chamber</h1>
-              <p>
-                A charming little vault for every upload — blob, local, and scrapbook pics.
-                Enter the secret passphrase.
-              </p>
-            </div>
-            <form className="win-form" onSubmit={onUnlock}>
-              <label>
-                Password
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  autoFocus
-                  required
-                />
-              </label>
-              {error ? <p className="win-error">{error}</p> : null}
-              <div className="win-btn-row">
-                <button type="submit" className="win-btn win-btn-pink">
-                  Unlock ✨
-                </button>
-                <a href="/" className="win-btn">
-                  Cancel
-                </a>
-              </div>
-            </form>
-            <p className="win-footnote">Encrypted session · 12h · keep it cute</p>
-          </div>
-        </div>
-      </div>
+      <AppShell title="Private Vault" pathLabel="C:\\LUVCART\\VAULT\\LOCK" showNav>
+        <form className="lc-auth" onSubmit={onUnlock}>
+          <p className="lc-kicker">WINDOWS 94 · SECRET CHAMBER</p>
+          <h1>Slideshow vault 🔐</h1>
+          <p>Every Blob + scrapbook upload. Enter the passphrase to peek.</p>
+          <label>
+            password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••••••"
+              autoFocus
+              required
+            />
+          </label>
+          {error ? <p className="lc-error">{error}</p> : null}
+          <button type="submit" className="lc-cta is-primary">
+            Unlock ✨
+          </button>
+          <Link className="lc-cta" href="/">
+            Cancel
+          </Link>
+          <p style={{ fontSize: "0.82rem", fontWeight: 700, color: "#6b5a7a" }}>
+            Encrypted session · 12h · keep it cute
+          </p>
+        </form>
+      </AppShell>
     );
   }
 
   return (
-    <div className="win-app">
-      <div className="win-window win-wide">
-        <div className="win-titlebar">
-          <span>🎞️ Luvcart Slideshow — all uploads</span>
-          <div className="win-traffic">
-            <b>_</b>
-            <b>□</b>
-            <button type="button" className="win-x" onClick={onLock} title="Lock vault">
-              ×
-            </button>
-          </div>
-        </div>
-
-        <div className="win-toolbar">
-          <button type="button" className="win-btn win-btn-pink" onClick={() => setPlaying((p) => !p)}>
-            {playing ? "❚❚ Pause" : "▶ Play slideshow"}
+    <AppShell
+      title="Slideshow"
+      pathLabel="C:\\LUVCART\\VAULT\\ALL"
+      loggedIn
+      statusLeft={`${uploads.length} files · ${spicyCount} spicy · ${storage}`}
+    >
+      <div className="lc-vault">
+        <div className="lc-vault-toolbar">
+          <button
+            type="button"
+            className="lc-mini-btn is-pink"
+            onClick={() => setPlaying((p) => !p)}
+          >
+            {playing ? "❚❚ Pause" : "▶ Play"}
           </button>
           <button
             type="button"
-            className="win-btn"
+            className="lc-mini-btn"
             onClick={() => setIndex((i) => (i - 1 + uploads.length) % Math.max(uploads.length, 1))}
             disabled={!uploads.length}
           >
@@ -179,71 +161,68 @@ export function SlideshowVault() {
           </button>
           <button
             type="button"
-            className="win-btn"
+            className="lc-mini-btn"
             onClick={() => setIndex((i) => (i + 1) % Math.max(uploads.length, 1))}
             disabled={!uploads.length}
           >
             Next ▶
           </button>
-          <button type="button" className="win-btn" onClick={loadMedia} disabled={loading}>
-            {loading ? "Refreshing…" : "↻ Refresh"}
+          <button type="button" className="lc-mini-btn" onClick={loadMedia} disabled={loading}>
+            {loading ? "…" : "↻"}
           </button>
-          <button type="button" className="win-btn" onClick={onLock}>
+          <button type="button" className="lc-mini-btn" onClick={onLock}>
             🔒 Lock
           </button>
-          <span className="win-pill">{storage}</span>
-          <span className="win-pill">{uploads.length} files</span>
-          <span className="win-pill">{spicyCount} spicy</span>
         </div>
 
-        <div className="win-stage">
-          <div className="win-preview">
+        <div className="lc-vault-stage">
+          <div className="lc-vault-preview">
             {selected?.url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={selected.url} alt={selected.title || "upload"} />
             ) : (
-              <div className="win-empty">No uploads yet, sweetie. Drop some pics first 💕</div>
+              <div className="lc-empty">No uploads yet, sweetie. Drop pics in Photos 💕</div>
             )}
-            {selected ? (
-              <div className="win-caption">
-                <strong>{selected.title || selected.pathname || "untitled"}</strong>
-                <span>
-                  {selected.source}
-                  {selected.spicy ? " · 🌶️ spicy" : ""}
-                  {selected.uploadedAt ? ` · ${new Date(selected.uploadedAt).toLocaleString()}` : ""}
-                </span>
-              </div>
-            ) : null}
           </div>
-
-          <div className="win-filmstrip">
-            <p className="win-strip-title">Preview strip</p>
-            <div className="win-thumbs">
-              {uploads.map((u, i) => (
-                <button
-                  key={u.id}
-                  type="button"
-                  className={`win-thumb ${i === index ? "is-active" : ""}`}
-                  onClick={() => {
-                    setIndex(i);
-                    setSelected(u);
-                    setPlaying(false);
-                  }}
-                  title={u.title || u.pathname || u.url}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={u.url} alt="" />
-                  {u.spicy ? <em>🌶️</em> : null}
-                </button>
-              ))}
+          {selected ? (
+            <div className="lc-vault-caption">
+              <strong>{selected.title || selected.pathname || "untitled"}</strong>
+              <span>
+                {selected.source}
+                {selected.spicy ? " · 🌶️" : ""}
+                {selected.teaser ? " · ✨ teaser" : ""}
+                {selected.uploadedAt ? ` · ${new Date(selected.uploadedAt).toLocaleString()}` : ""}
+              </span>
             </div>
-          </div>
+          ) : null}
         </div>
 
-        <div className="win-statusbar">
-          Ready · Luvcart vault · posh &amp; private · {index + 1}/{uploads.length || 0}
+        <div className="lc-vault-strip">
+          <p className="lc-section-title">Preview strip</p>
+          <div className="lc-vault-thumbs">
+            {uploads.map((u, i) => (
+              <button
+                key={u.id}
+                type="button"
+                className={`lc-vault-thumb ${i === index ? "is-active" : ""}`}
+                onClick={() => {
+                  setIndex(i);
+                  setSelected(u);
+                  setPlaying(false);
+                }}
+                title={u.title || u.pathname || u.url}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={u.url} alt="" />
+                {u.spicy ? <em>🌶️</em> : null}
+              </button>
+            ))}
+          </div>
+          <p className="lc-guest-pill" style={{ marginTop: "0.45rem" }}>
+            {index + 1}/{uploads.length || 0} · slaying in the vault ✨
+          </p>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }

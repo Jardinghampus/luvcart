@@ -44,6 +44,9 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   return (
     <form className="lc-auth" onSubmit={onSubmit}>
+      <p className="lc-kicker">
+        {mode === "signup" ? "WINDOWS 94 · NEW FOLDER" : "WINDOWS 94 · WELCOME BACK"}
+      </p>
       <h1>{mode === "signup" ? "make it yours 💕" : "welcome back 🍓"}</h1>
       <p>
         {mode === "signup"

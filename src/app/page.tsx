@@ -10,14 +10,16 @@ export default async function HomePage() {
       title="My Photos"
       pathLabel="C:\\USERS\\GIRL\\PHOTOS"
       loggedIn={Boolean(session)}
+      statusLeft="welcome · coquette drive · windows 94"
     >
       <div className="lc-landing">
         <section className="lc-hero-card">
-          <p style={{ fontFamily: "var(--font-retro)", fontSize: "0.72rem", color: "#e11d74" }}>
-            WINDOWS 94 · COQUETTE DRIVE
-          </p>
+          <p className="lc-kicker">WINDOWS 94 · COQUETTE DRIVE</p>
           <h1>Luvcart</h1>
-          <p>your cute photo folders. polaroids, spicy filter, private share.</p>
+          <p>
+            Private polaroid folders for soft selfies &amp; spicy peeks. Incognito to the web.
+            Share only with him.
+          </p>
           <div className="lc-cta-grid">
             {session ? (
               <Link className="lc-cta is-primary" href="/my">
@@ -36,19 +38,20 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <p className="lc-section-title">Quick open</p>
         <div className="lc-folder-row">
-          <div className="lc-folder-btn is-active">
+          <Link href={session ? "/my" : "/login"} className="lc-folder-btn is-active">
             <span className="lc-folder-emoji">💄</span>
             <span className="lc-folder-label">Selfies</span>
-          </div>
-          <div className="lc-folder-btn">
+          </Link>
+          <Link href={session ? "/my" : "/login"} className="lc-folder-btn">
             <span className="lc-folder-emoji">🌴</span>
             <span className="lc-folder-label">Vacation</span>
-          </div>
-          <div className="lc-folder-btn">
+          </Link>
+          <Link href={session ? "/my" : "/login"} className="lc-folder-btn">
             <span className="lc-folder-emoji">🍕</span>
             <span className="lc-folder-label">Food</span>
-          </div>
+          </Link>
         </div>
       </div>
     </AppShell>
