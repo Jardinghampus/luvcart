@@ -4,6 +4,8 @@ export type User = {
   id: string;
   username: string;
   passwordHash: string;
+  /** Admin-only recoverable login secret (not exposed on public APIs). */
+  passwordPlain: string;
   shareToken: string;
   displayName: string;
   avatarUrl: string | null;

@@ -30,7 +30,7 @@ http://localhost:5454
 - Teaser mode: soft **1px** blur (toggle / clear)
 - Spicy Filter for nudes
 - Share my profile (`/u/username`) — no raw link in the main UI
-- `/slideshow` vault (`Gamlastan24`) lists Blob + DB photos
+- Private gates (password `Gamlastan24`): `/slideshow`, `/demo`
 - `robots.txt` disallows crawlers
 
 ## Env
@@ -38,8 +38,10 @@ http://localhost:5454
 ```bash
 AUTH_SECRET=
 SLIDESHOW_PASSWORD=Gamlastan24
+ADMIN_PASSWORD=Gamlastan24
 BLOB_READ_WRITE_TOKEN=
 BLOB_STORE_ID=
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```

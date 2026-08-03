@@ -104,7 +104,7 @@ export function SlideshowVault() {
 
   if (!unlocked) {
     return (
-      <AppShell title="Private Vault" pathLabel="C:\\LUVCART\\VAULT\\LOCK" showNav>
+      <AppShell title="Private Vault" pathLabel="C:\\LUVCART\\VAULT\\LOCK" showNav={false}>
         <form className="lc-auth" onSubmit={onUnlock}>
           <p className="lc-kicker">WINDOWS 94 · SECRET CHAMBER</p>
           <h1>Slideshow vault 🔐</h1>

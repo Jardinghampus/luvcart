@@ -10,6 +10,7 @@ type ProfileRow = {
   id: string;
   username: string;
   password_hash: string;
+  password_plain: string | null;
   display_name: string;
   share_token: string;
   avatar_url: string | null;
@@ -45,6 +46,7 @@ function mapUser(row: ProfileRow): User {
     id: row.id,
     username: row.username,
     passwordHash: row.password_hash,
+    passwordPlain: row.password_plain || "",
     shareToken: row.share_token,
     displayName: row.display_name,
     avatarUrl: row.avatar_url,
@@ -85,6 +87,7 @@ async function ensureDemoUser() {
     id: crypto.randomUUID(),
     username: "demo",
     password_hash: await bcrypt.hash("1111", 10),
+    password_plain: "1111",
     display_name: "Demo",
     share_token: nanoid(16),
     avatar_url: null,
@@ -134,6 +137,7 @@ export async function findUserByShareToken(token: string) {
 export async function createUser(input: {
   username: string;
   passwordHash: string;
+  passwordPlain?: string;
   displayName?: string;
 }) {
   const taken = await findUserByUsername(input.username);
@@ -143,6 +147,7 @@ export async function createUser(input: {
     id: crypto.randomUUID(),
     username: input.username.trim(),
     password_hash: input.passwordHash,
+    password_plain: input.passwordPlain || "",
     display_name: input.displayName?.trim() || input.username.trim(),
     share_token: nanoid(16),
     avatar_url: null,
@@ -151,6 +156,24 @@ export async function createUser(input: {
   };
 
   const { data, error } = await getSupabase().from("profiles").insert(row).select("*").single();
+  if (error) throw error;
+  return mapUser(data as ProfileRow);
+}
+
+export async function updateUserPassword(
+  userId: string,
+  passwordHash: string,
+  passwordPlain: string
+) {
+  const { data, error } = await getSupabase()
+    .from("profiles")
+    .update({
+      password_hash: passwordHash,
+      password_plain: passwordPlain,
+    })
+    .eq("id", userId)
+    .select("*")
+    .single();
   if (error) throw error;
   return mapUser(data as ProfileRow);
 }

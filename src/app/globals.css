@@ -1108,3 +1108,108 @@ a {
   }
 }
 
+.lc-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lc-demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lc-demo-card {
+  padding: 0.7rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2px solid #fff;
+  border-right-color: #716f64;
+  border-bottom-color: #716f64;
+}
+
+.lc-demo-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.lc-demo-head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.lc-demo-avatar {
+  width: 3.2rem;
+  height: 3.2rem;
+  object-fit: cover;
+  border: 2px solid #716f64;
+  background: #ffe3f1;
+}
+
+.lc-demo-avatar.is-empty {
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+}
+
+.lc-demo-creds {
+  margin: 0.25rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--lc-muted);
+}
+
+.lc-demo-creds strong {
+  color: var(--lc-pink-deep);
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.lc-demo-grid {
+  margin-top: 0.65rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.lc-demo-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border: 2px solid #fff;
+  border-right-color: #716f64;
+  border-bottom-color: #716f64;
+  background: #1d1630;
+  overflow: hidden;
+  text-decoration: none;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.lc-demo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lc-demo-thumb em {
+  position: absolute;
+  left: 0.15rem;
+  bottom: 0.15rem;
+  font-style: normal;
+  font-size: 0.62rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--lc-ink);
+  padding: 0 0.2rem;
+}
+
+

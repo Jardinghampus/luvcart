@@ -1,9 +1,4 @@
 export {
-  checkSlideshowPassword,
-  getSlideshowPassword,
-  isSlideshowUnlocked,
-  lockSlideshow,
-  unlockSlideshow,
   checkAdminPassword,
   getAdminPassword,
   isAdminUnlocked,

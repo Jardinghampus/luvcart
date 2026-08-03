@@ -59,13 +59,11 @@ export function AppShell({
         { href: "/", label: "Home", icon: "🏠" },
         { href: "/my", label: "Photos", icon: "💗" },
         { href: "/share", label: "Share", icon: "🎀" },
-        { href: "/slideshow", label: "Vault", icon: "🎞️" },
       ]
     : [
         { href: "/", label: "Home", icon: "🏠" },
         { href: "/signup", label: "Join", icon: "✨" },
         { href: "/login", label: "Login", icon: "🍓" },
-        { href: "/slideshow", label: "Vault", icon: "🎞️" },
       ];
 
   const crumb = title.replace(/^My\s+/i, "") || "Photos";
