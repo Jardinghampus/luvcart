@@ -65,4 +65,4 @@ export function folderMeta(id: FolderId) {
   return FOLDERS.find((f) => f.id === id) || FOLDERS[0];
 }
 
-export const TEASER_BLUR_PX = 1;
+export const TEASER_BLUR_PX = 3;

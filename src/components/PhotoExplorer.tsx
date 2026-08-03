@@ -437,7 +437,7 @@ export function PhotoExplorer({
                         })
                       }
                     >
-                      {active.blurPx > 0 ? "remove blur" : "restore 1px blur"}
+                      {active.blurPx > 0 ? "remove blur" : "restore 3px blur"}
                     </button>
                   ) : null}
                   <button
