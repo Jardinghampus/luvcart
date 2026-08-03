@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { saveMyPageSnapshot } from "@/lib/save-page-card";
 import { useSpicy } from "./SpicyMode";
 
 type Props = {
@@ -47,11 +48,25 @@ export function AppShell({
   const router = useRouter();
   const { spicy, toggleSpicy } = useSpicy();
   const clock = useClock();
+  const [saving, setSaving] = useState(false);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
     router.refresh();
+  }
+
+  async function onSave() {
+    if (saving) return;
+    setSaving(true);
+    try {
+      await saveMyPageSnapshot();
+    } catch (err) {
+      console.error(err);
+      window.alert("Could not save snapshot — try again 💕");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const navLinks = loggedIn
@@ -120,10 +135,11 @@ export function AppShell({
           <button
             type="button"
             className="lc-tool-btn"
-            onClick={() => window.print?.()}
-            title="Save / print"
+            onClick={onSave}
+            disabled={saving}
+            title="Save my page snapshot"
           >
-            💾 Save
+            {saving ? "…" : "💾 Save"}
           </button>
         </div>
 
