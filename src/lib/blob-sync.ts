@@ -40,11 +40,10 @@ export async function reconcileUserBlobs(userId: string) {
 
   let recovered = 0;
   for (const orphan of orphans) {
-    const name = orphan.url.split("/").pop()?.split("?")[0] || "recovered";
     await createItem({
       userId,
-      title: `recovered · ${name.slice(0, 24)}`,
-      note: "auto-synced from Blob ✨",
+      title: "Cute",
+      note: "",
       photoUrl: orphan.url,
       folder: "selfies",
       teaser: true,

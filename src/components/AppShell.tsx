@@ -162,7 +162,7 @@ export function AppShell({
         <main className="lc-content">{children}</main>
 
         <footer className="lc-statusbar">
-          <span>{statusLeft || "3 folders · luv mode · slaying ✨"}</span>
+          <span>{statusLeft || "4 folders · luv mode · slaying ✨"}</span>
           <span className="lc-statusbar-right">LUVCART v2.6 ❤️</span>
         </footer>
       </div>
