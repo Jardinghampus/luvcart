@@ -35,7 +35,6 @@ export function SpicyProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready) return;
-    document.documentElement.classList.toggle("is-spicy", spicy);
     try {
       localStorage.setItem(STORAGE_KEY, spicy ? "1" : "0");
     } catch {

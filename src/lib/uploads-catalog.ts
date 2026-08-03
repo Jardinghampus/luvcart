@@ -38,17 +38,36 @@ export async function listAllUploads(): Promise<UploadEntry[]> {
   }
 
   try {
-    const files = await fs.readdir(LOCAL_UPLOAD_DIR);
-    for (const name of files) {
-      if (name.startsWith(".")) continue;
-      const url = `/uploads/${name}`;
-      const stat = await fs.stat(path.join(LOCAL_UPLOAD_DIR, name));
+    const files = await fs.readdir(LOCAL_UPLOAD_DIR, { withFileTypes: true });
+    for (const entry of files) {
+      if (entry.name.startsWith(".")) continue;
+      if (entry.isDirectory()) {
+        const nested = await fs.readdir(path.join(LOCAL_UPLOAD_DIR, entry.name));
+        for (const name of nested) {
+          if (name.startsWith(".")) continue;
+          const url = `/uploads/${entry.name}/${name}`;
+          const stat = await fs.stat(path.join(LOCAL_UPLOAD_DIR, entry.name, name));
+          if (!byUrl.has(url)) {
+            byUrl.set(url, {
+              id: `local-${entry.name}-${name}`,
+              url,
+              source: "local",
+              pathname: `${entry.name}/${name}`,
+              uploadedAt: stat.mtime.toISOString(),
+              size: stat.size,
+            });
+          }
+        }
+        continue;
+      }
+      const url = `/uploads/${entry.name}`;
+      const stat = await fs.stat(path.join(LOCAL_UPLOAD_DIR, entry.name));
       if (!byUrl.has(url)) {
         byUrl.set(url, {
-          id: `local-${name}`,
+          id: `local-${entry.name}`,
           url,
           source: "local",
-          pathname: name,
+          pathname: entry.name,
           uploadedAt: stat.mtime.toISOString(),
           size: stat.size,
         });

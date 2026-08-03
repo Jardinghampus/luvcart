@@ -9,23 +9,29 @@ function useBlob() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
-export async function uploadPhoto(file: File): Promise<string> {
+export async function uploadPhoto(
+  file: File,
+  opts?: { userId?: string }
+): Promise<string> {
   const ext = path.extname(file.name || "") || ".jpg";
   const safeExt = ext.slice(0, 8);
   const filename = `${nanoid()}${safeExt}`;
+  const owner = opts?.userId?.replace(/[^a-zA-Z0-9_-]/g, "") || "shared";
+  const blobPath = `luvcart/${owner}/${filename}`;
 
   if (useBlob()) {
-    const blob = await put(`luvcart/${filename}`, file, {
+    const blob = await put(blobPath, file, {
       access: "public",
       token: process.env.BLOB_READ_WRITE_TOKEN,
+      addRandomSuffix: false,
     });
     return blob.url;
   }
 
-  await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
+  await fs.mkdir(path.join(LOCAL_UPLOAD_DIR, owner), { recursive: true });
   const bytes = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(path.join(LOCAL_UPLOAD_DIR, filename), bytes);
-  return `/uploads/${filename}`;
+  await fs.writeFile(path.join(LOCAL_UPLOAD_DIR, owner, filename), bytes);
+  return `/uploads/${owner}/${filename}`;
 }
 
 export async function deletePhoto(url: string | null | undefined) {
@@ -52,4 +58,20 @@ export async function deletePhoto(url: string | null | undefined) {
 
 export function storageMode() {
   return useBlob() ? "vercel-blob" : "local-disk";
+}
+
+/** Extract owner folder from luvcart/{userId}/file or /uploads/{userId}/file */
+export function ownerFromPhotoUrl(url: string): string | null {
+  try {
+    const pathname = url.startsWith("http") ? new URL(url).pathname : url;
+    const parts = pathname.split("/").filter(Boolean);
+    // .../luvcart/{owner}/{file} or uploads/{owner}/{file}
+    const luvIdx = parts.findIndex((p) => p === "luvcart" || p === "uploads");
+    if (luvIdx >= 0 && parts[luvIdx + 1] && parts[luvIdx + 2]) {
+      return parts[luvIdx + 1];
+    }
+  } catch {
+    // ignore
+  }
+  return null;
 }

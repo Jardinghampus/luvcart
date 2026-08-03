@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Max photo size is 8MB" }, { status: 400 });
     }
 
-    const url = await uploadPhoto(file);
+    const url = await uploadPhoto(file, { userId: session.userId });
     return NextResponse.json({ url, storage: storageMode() });
   } catch (err) {
     console.error(err);

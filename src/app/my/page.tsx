@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { PhotoExplorer } from "@/components/PhotoExplorer";
 import { getSession, toPublicUser } from "@/lib/auth";
+import { reconcileUserBlobs } from "@/lib/blob-sync";
 import { findUserById, getItemsForUser } from "@/lib/db";
 import { folderMeta } from "@/lib/types";
 
@@ -11,6 +12,12 @@ export default async function MyPage() {
 
   const user = await findUserById(session.userId);
   if (!user) redirect("/login");
+
+  try {
+    await reconcileUserBlobs(user.id);
+  } catch (err) {
+    console.error("blob reconcile failed", err);
+  }
 
   const items = await getItemsForUser(user.id);
   const path = folderMeta("selfies").path;

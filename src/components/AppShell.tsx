@@ -71,15 +71,13 @@ export function AppShell({
   const crumb = title.replace(/^My\s+/i, "") || "Photos";
 
   return (
-    <div className={`lc-desktop ${spicy ? "is-spicy" : ""}`}>
+    <div className="lc-desktop">
       <div className="lc-desktop-icons" aria-hidden>
         <span>♻️ Recycle</span>
         <span>💻 My PC</span>
         <span>📁 Photos</span>
         <span>💖 Luvcart</span>
       </div>
-
-      {spicy ? <div className="lc-scanlines" aria-hidden /> : null}
 
       <div className="lc-window">
         <div className="lc-titlebar">

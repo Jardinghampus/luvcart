@@ -113,15 +113,16 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
     if (readOnly) return;
     setError("");
     setBusy(true);
+    let uploadedUrl: string | null = null;
     try {
-      const photoUrl = file ? await uploadFile(file) : null;
+      uploadedUrl = file ? await uploadFile(file) : null;
       const res = await fetch("/api/items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
           note,
-          photoUrl,
+          photoUrl: uploadedUrl,
           spicy: markSpicy,
           teaser: markTeaser,
           blurPx: markTeaser ? TEASER_BLUR_PX : 0,
@@ -138,7 +139,14 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
       setFile(null);
       setShowAdd(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed");
+      // Blob file may exist without a DB row — /my reconcile will recover it.
+      setError(
+        err instanceof Error
+          ? uploadedUrl
+            ? `${err.message} (photo saved — refresh Photos to sync)`
+            : err.message
+          : "Failed"
+      );
     } finally {
       setBusy(false);
     }
