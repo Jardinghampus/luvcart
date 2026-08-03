@@ -9,6 +9,7 @@ type Props = {
   initialItems: PhotoItem[];
   user: PublicUser;
   readOnly?: boolean;
+  initialFolder?: FolderId;
 };
 
 function formatDate(iso: string) {
@@ -70,11 +71,21 @@ function Polaroid({
   );
 }
 
-export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
+function parseFolder(value: string | null | undefined): FolderId {
+  if (value === "vacation" || value === "food" || value === "selfies") return value;
+  return "selfies";
+}
+
+export function PhotoExplorer({
+  initialItems,
+  user,
+  readOnly = false,
+  initialFolder = "selfies",
+}: Props) {
   const { spicy: spicyMode } = useSpicy();
   const [items, setItems] = useState(initialItems);
   const [profile, setProfile] = useState(user);
-  const [folder, setFolder] = useState<FolderId>("selfies");
+  const [folder, setFolder] = useState<FolderId>(parseFolder(initialFolder));
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [markSpicy, setMarkSpicy] = useState(false);
@@ -131,7 +142,10 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not add");
-      setItems((prev) => [...prev, data.item]);
+      const created = data.item as PhotoItem;
+      setItems((prev) => [...prev, created]);
+      if (created.folder) setFolder(created.folder);
+      setFeedMode(false);
       setTitle("");
       setNote("");
       setMarkSpicy(false);
@@ -248,7 +262,11 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
                 key={f.id}
                 type="button"
                 className={`lc-folder-btn ${folder === f.id ? "is-active" : ""}`}
-                onClick={() => setFolder(f.id)}
+                onClick={() => {
+                  setFolder(f.id);
+                  setFeedMode(false);
+                  setError("");
+                }}
               >
                 <span className="lc-folder-emoji">{f.emoji}</span>
                 <span className="lc-folder-label">{f.label}</span>
@@ -261,10 +279,19 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
 
       <section className="lc-section">
         <div className="lc-section-head">
-          <h2 className="lc-section-title">{feedMode ? "All photos" : meta.label}</h2>
+          <h2 className="lc-section-title">
+            {feedMode ? "All photos" : `${meta.emoji} ${meta.label}`}
+          </h2>
           {!readOnly ? (
-            <button type="button" className="lc-mini-btn" onClick={() => setShowAdd((v) => !v)}>
-              {showAdd ? "Close" : "+ Add pic"}
+            <button
+              type="button"
+              className="lc-mini-btn"
+              onClick={() => {
+                setShowAdd((v) => !v);
+                setError("");
+              }}
+            >
+              {showAdd ? "Close" : `+ Add to ${meta.label}`}
             </button>
           ) : (
             <span className="lc-guest-pill">👁 peek only · {profile.displayName}</span>
@@ -273,6 +300,23 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
 
         {showAdd && !readOnly ? (
           <form className="lc-add-panel" onSubmit={onCreate}>
+            <p className="lc-kicker">
+              saving into {meta.emoji} {meta.label}
+            </p>
+            <label>
+              folder
+              <select
+                value={folder}
+                onChange={(e) => setFolder(parseFolder(e.target.value))}
+                aria-label="Choose folder"
+              >
+                {FOLDERS.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.emoji} {f.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label>
               caption
               <input
@@ -318,7 +362,7 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
             </label>
             {error ? <p className="lc-error">{error}</p> : null}
             <button type="submit" className="lc-mini-btn is-pink" disabled={busy}>
-              {busy ? "Saving…" : "Save to folder 💾"}
+              {busy ? "Saving…" : `Save to ${meta.label} 💾`}
             </button>
           </form>
         ) : null}
@@ -396,6 +440,22 @@ export function PhotoExplorer({ initialItems, user, readOnly = false }: Props) {
                   >
                     {active.spicy ? "unspicy" : "make spicy 🌶️"}
                   </button>
+                  {FOLDERS.filter((f) => f.id !== active.folder).map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      className="lc-mini-btn"
+                      onClick={async () => {
+                        const updated = await patchItem(active, { folder: f.id });
+                        if (updated) {
+                          setFolder(f.id);
+                          setFeedMode(false);
+                        }
+                      }}
+                    >
+                      move to {f.emoji} {f.label}
+                    </button>
+                  ))}
                   <button
                     type="button"
                     className="lc-mini-btn is-danger"

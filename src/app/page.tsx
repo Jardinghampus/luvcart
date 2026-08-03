@@ -40,15 +40,21 @@ export default async function HomePage() {
 
         <p className="lc-section-title">Quick open</p>
         <div className="lc-folder-row">
-          <Link href={session ? "/my" : "/login"} className="lc-folder-btn is-active">
+          <Link
+            href={session ? "/my?folder=selfies" : "/login"}
+            className="lc-folder-btn is-active"
+          >
             <span className="lc-folder-emoji">💄</span>
             <span className="lc-folder-label">Selfies</span>
           </Link>
-          <Link href={session ? "/my" : "/login"} className="lc-folder-btn">
+          <Link
+            href={session ? "/my?folder=vacation" : "/login"}
+            className="lc-folder-btn"
+          >
             <span className="lc-folder-emoji">🌴</span>
             <span className="lc-folder-label">Vacation</span>
           </Link>
-          <Link href={session ? "/my" : "/login"} className="lc-folder-btn">
+          <Link href={session ? "/my?folder=food" : "/login"} className="lc-folder-btn">
             <span className="lc-folder-emoji">🍕</span>
             <span className="lc-folder-label">Food</span>
           </Link>

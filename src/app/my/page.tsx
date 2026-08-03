@@ -4,9 +4,16 @@ import { PhotoExplorer } from "@/components/PhotoExplorer";
 import { getSession, toPublicUser } from "@/lib/auth";
 import { reconcileUserBlobs } from "@/lib/blob-sync";
 import { findUserById, getItemsForUser } from "@/lib/db";
-import { folderMeta } from "@/lib/types";
+import { folderMeta, type FolderId } from "@/lib/types";
 
-export default async function MyPage() {
+type Props = { searchParams: Promise<{ folder?: string }> };
+
+function parseFolder(value?: string): FolderId {
+  if (value === "vacation" || value === "food" || value === "selfies") return value;
+  return "selfies";
+}
+
+export default async function MyPage({ searchParams }: Props) {
   const session = await getSession();
   if (!session) redirect("/login");
 
@@ -20,11 +27,16 @@ export default async function MyPage() {
   }
 
   const items = await getItemsForUser(user.id);
-  const path = folderMeta("selfies").path;
+  const folder = parseFolder((await searchParams).folder);
+  const meta = folderMeta(folder);
 
   return (
-    <AppShell title="My Selfies" pathLabel={path} loggedIn>
-      <PhotoExplorer initialItems={items} user={toPublicUser(user)} />
+    <AppShell title={`My ${meta.label}`} pathLabel={meta.path} loggedIn>
+      <PhotoExplorer
+        initialItems={items}
+        user={toPublicUser(user)}
+        initialFolder={folder}
+      />
     </AppShell>
   );
 }

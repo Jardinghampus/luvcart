@@ -495,7 +495,8 @@ a {
 .lc-add-panel input[type="text"],
 .lc-add-panel input:not([type]),
 .lc-add-panel input[type="password"],
-.lc-add-panel input[type="file"] {
+.lc-add-panel input[type="file"],
+.lc-add-panel select {
   min-height: 2.2rem;
   border: 2px solid #716f64;
   border-right-color: #fff;
