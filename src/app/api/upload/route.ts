@@ -17,13 +17,13 @@ export async function POST(request: Request) {
   try {
     const form = await request.formData();
     const raw = form.get("file");
-    // On some runtimes `instanceof File` fails — accept Blob-like uploads too.
-    const file =
-      raw instanceof File
-        ? raw
-        : raw instanceof Blob
-          ? new File([raw], "photo.jpg", { type: raw.type || "image/jpeg" })
-          : null;
+    let file: File | null = null;
+    if (raw instanceof File) {
+      file = raw;
+    } else if (raw && typeof raw === "object" && "arrayBuffer" in raw && "size" in raw) {
+      const blob = raw as Blob;
+      file = new File([blob], "photo.jpg", { type: blob.type || "image/jpeg" });
+    }
 
     if (!file || file.size === 0) {
       return NextResponse.json({ error: "No photo attached" }, { status: 400 });
