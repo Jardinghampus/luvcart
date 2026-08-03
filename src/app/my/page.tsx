@@ -9,7 +9,9 @@ import { folderMeta, type FolderId } from "@/lib/types";
 type Props = { searchParams: Promise<{ folder?: string }> };
 
 function parseFolder(value?: string): FolderId {
-  if (value === "vacation" || value === "food" || value === "selfies") return value;
+  if (value === "vacation" || value === "food" || value === "selfies" || value === "secret") {
+    return value;
+  }
   return "selfies";
 }
 

@@ -19,7 +19,7 @@ const createSchema = z.object({
   spicy: z.boolean().optional(),
   teaser: z.boolean().optional(),
   blurPx: z.number().min(0).max(24).optional(),
-  folder: z.enum(["selfies", "vacation", "food"]).optional(),
+  folder: z.enum(["selfies", "vacation", "food", "secret"]).optional(),
 });
 
 export async function POST(request: Request) {

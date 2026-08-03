@@ -4,7 +4,7 @@ import { getSupabase } from "./supabase";
 import type { FolderId, PhotoItem, User } from "./types";
 import { TEASER_BLUR_PX } from "./types";
 
-const FOLDER_IDS: FolderId[] = ["selfies", "vacation", "food"];
+const FOLDER_IDS: FolderId[] = ["selfies", "vacation", "food", "secret"];
 
 type ProfileRow = {
   id: string;

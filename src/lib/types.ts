@@ -1,4 +1,4 @@
-export type FolderId = "selfies" | "vacation" | "food";
+export type FolderId = "selfies" | "vacation" | "food" | "secret";
 
 export type User = {
   id: string;
@@ -58,6 +58,7 @@ export const FOLDERS: {
   { id: "selfies", label: "Selfies", emoji: "💄", path: "C:\\USERS\\GIRL\\PHOTOS\\SELFIES" },
   { id: "vacation", label: "Vacation", emoji: "🌴", path: "C:\\USERS\\GIRL\\PHOTOS\\VACATION" },
   { id: "food", label: "Food", emoji: "🍕", path: "C:\\USERS\\GIRL\\PHOTOS\\FOOD" },
+  { id: "secret", label: "Secret", emoji: "🔒", path: "C:\\USERS\\GIRL\\PHOTOS\\SECRET" },
 ];
 
 export function folderMeta(id: FolderId) {

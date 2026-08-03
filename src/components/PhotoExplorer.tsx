@@ -72,7 +72,9 @@ function Polaroid({
 }
 
 function parseFolder(value: string | null | undefined): FolderId {
-  if (value === "vacation" || value === "food" || value === "selfies") return value;
+  if (value === "vacation" || value === "food" || value === "selfies" || value === "secret") {
+    return value;
+  }
   return "selfies";
 }
 
@@ -105,7 +107,12 @@ export function PhotoExplorer({
   );
   const shown = feedMode ? feed : inFolder;
   const folderCounts = useMemo(() => {
-    const counts: Record<FolderId, number> = { selfies: 0, vacation: 0, food: 0 };
+    const counts: Record<FolderId, number> = {
+      selfies: 0,
+      vacation: 0,
+      food: 0,
+      secret: 0,
+    };
     for (const item of items) counts[item.folder] += 1;
     return counts;
   }, [items]);

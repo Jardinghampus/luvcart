@@ -58,6 +58,10 @@ export default async function HomePage() {
             <span className="lc-folder-emoji">🍕</span>
             <span className="lc-folder-label">Food</span>
           </Link>
+          <Link href={session ? "/my?folder=secret" : "/login"} className="lc-folder-btn">
+            <span className="lc-folder-emoji">🔒</span>
+            <span className="lc-folder-label">Secret</span>
+          </Link>
         </div>
       </div>
     </AppShell>

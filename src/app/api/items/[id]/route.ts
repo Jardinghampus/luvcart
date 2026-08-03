@@ -12,7 +12,7 @@ const patchSchema = z.object({
   spicy: z.boolean().optional(),
   teaser: z.boolean().optional(),
   blurPx: z.number().min(0).max(24).optional(),
-  folder: z.enum(["selfies", "vacation", "food"]).optional(),
+  folder: z.enum(["selfies", "vacation", "food", "secret"]).optional(),
 });
 
 type Params = { params: Promise<{ id: string }> };
